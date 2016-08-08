@@ -1,0 +1,44 @@
+# vi: set ft=ruby
+
+
+BOX_NAME    = "SPECIFY_ME"
+VM_NAME     = "SPECIFY_ME"
+VM_HOSTNAME = "SPECIFY_ME"
+VM_IP       = "SPECIFY_ME"
+
+
+global_provision_script = <<SCRIPT
+#!/bin/bash
+if ! grep "%s" /etc/hosts >/dev/null 2>&1; then
+  echo "%s %s %s" >>/etc/hosts
+fi
+SCRIPT
+global_provision_script %= [VM_HOSTNAME, VM_IP, VM_HOSTNAME, VM_NAME]
+
+
+local_provision_script = <<SCRIPT
+#!/bin/bash
+
+if [ -e "/vagrant/vm-init.sh" ]; then
+  /bin/bash /vagrant/vm-init.sh %s
+fi
+SCRIPT
+local_provision_script %= [VM_NAME]
+
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = BOX_NAME
+  config.vm.box_check_update = false
+  config.vm.provision :shell, inline: global_provision_script
+
+  config.ssh.username = "vagrant"
+  config.ssh.insert_key = false
+
+  config.vm.define VM_NAME do |me|
+    me.vm.hostname = VM_HOSTNAME
+    me.vm.network :private_network, ip: VM_IP
+    me.vm.provision :shell, inline: local_provision_script
+  end
+end
