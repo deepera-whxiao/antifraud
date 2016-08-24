@@ -15,7 +15,7 @@ FRAUD_SCORE_TOP_NUM = 50
 
 class MsisdnBlacklist(LoggedAPIView):
     permission_classes = (AllowAny,)
-    serializer_class = BlacklistSerializer
+    serializer_class = OpTimeSerializer
 
     def get(self, request, format=None):
         # Get request data
@@ -39,6 +39,9 @@ class MsisdnBlacklist(LoggedAPIView):
                       'blacklist': blacklist}
 
         return Response(result)
+
+    # def post(self, request, format=None):
+
 
 
 class MsisdnBlacklistStatus(LoggedAPIView):

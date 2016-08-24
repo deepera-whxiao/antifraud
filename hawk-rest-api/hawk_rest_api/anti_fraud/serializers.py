@@ -4,8 +4,13 @@ from rest_framework import serializers
 #     id = serializers.IntegerField()
 
 
+class OpTimeSerializer(serializers.Serializer):
+    op_time = serializers.CharField(min_length=6, max_length=6)
+
+
 class BlacklistSerializer(serializers.Serializer):
     op_time = serializers.CharField(min_length=6, max_length=6)
+    acc_nbr = serializers.CharField(min_length=32, max_length=32)
 
 
 class MsisdnBlacklistStatusSerializer(serializers.Serializer):

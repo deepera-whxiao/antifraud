@@ -17,26 +17,6 @@ FROM dmpd_cdma_thjwq_inf_201606
 GROUP BY op_time, acc_nbr, called_nbr
 ORDER BY op_time, acc_nbr, called_nbr;
 
-DROP TABLE IF EXISTS blacklist;
-CREATE TABLE blacklist (
-  id       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  op_time  TEXT, 
-  acc_nbr  TEXT UNIQUE
-);
-
-INSERT INTO blacklist (op_time, acc_nbr)
-SELECT op_time, called_nbr
-FROM cdma_thjwq_summary_201606
-GROUP BY op_time, called_nbr
-ORDER BY count(*) DESC
-LIMIT 10;
-
-INSERT INTO blacklist (op_time, acc_nbr)
-SELECT op_time, acc_nbr
-FROM cdma_thjwq_summary_201606
-GROUP BY op_time, acc_nbr
-LIMIT 2;
-
 -- Drop dmpd_cdma_thjwq_inf_201606 because it does not contain an 'id' field which is required
 -- by Django model
 DROP TABLE dmpd_cdma_thjwq_inf_201606;
