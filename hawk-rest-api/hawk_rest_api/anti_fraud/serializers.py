@@ -13,9 +13,9 @@ class BlacklistSerializer(serializers.Serializer):
     acc_nbr = serializers.CharField(min_length=32, max_length=32)
 
 
-class MsisdnBlacklistStatusSerializer(serializers.Serializer):
-    op_time = serializers.CharField(min_length=6, max_length=6)
-    acc_nbr = serializers.CharField(min_length=32, max_length=32)
+# class MsisdnBlacklistStatusSerializer(serializers.Serializer):
+#     op_time = serializers.CharField(min_length=6, max_length=6)
+#     acc_nbr = serializers.CharField(min_length=32, max_length=32)
 
 
 class MsisdnCloseRelationshipSerializer(serializers.Serializer):

@@ -15,11 +15,12 @@ FRAUD_SCORE_TOP_NUM = 50
 
 class MsisdnBlacklist(LoggedAPIView):
     permission_classes = (AllowAny,)
-    serializer_class = OpTimeSerializer
+    # serializer_class = OpTimeSerializer
 
     def get(self, request, format=None):
         # Get request data
-        serializer = self.serializer_class(data=request.GET)
+        #serializer = self.serializer_class(data=request.GET)
+        serializer = OpTimeSerializer(data=request.GET)
         if not serializer.is_valid(raise_exception=False):
             return Response({'error': 'Wrong input format.'},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -40,13 +41,61 @@ class MsisdnBlacklist(LoggedAPIView):
 
         return Response(result)
 
-    # def post(self, request, format=None):
+    def post(self, request, format=None):
+        # Get request data
+        serializer = BlacklistSerializer(data=request.GET)
+        if not serializer.is_valid(raise_exception=False):
+            return Response({'error': 'Wrong input format.'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
+        data = serializer.validated_data
+        op_time = data['op_time']
+        acc_nbr = data['acc_nbr']
+
+        # Check whether the acc_nbr exists or not
+        is_exist = Blacklist.objects.filter(
+            op_time=op_time, acc_nbr=acc_nbr).exists()
+        if is_exist:
+            return Response(
+                {'error': 'The acc_nbr already exists in blacklist.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        else:
+            user = Blacklist(op_time=op_time, acc_nbr=acc_nbr)
+            user.save()
+
+        return Response(data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, format=None):
+        # Get request data
+        serializer = BlacklistSerializer(data=request.GET)
+        if not serializer.is_valid(raise_exception=False):
+            return Response({'error': 'Wrong input format.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        data = serializer.validated_data
+        op_time = data['op_time']
+        acc_nbr = data['acc_nbr']
+
+        # Check whether the acc_nbr exists or not
+        is_exist = Blacklist.objects.filter(
+            op_time=op_time, acc_nbr=acc_nbr).exists()
+        if not is_exist:
+            return Response(
+                {'error': 'The acc_nbr does not exist in blacklist.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        else:
+            blacklist = Blacklist.objects.get(op_time=op_time, acc_nbr=acc_nbr)
+            blacklist.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class MsisdnBlacklistStatus(LoggedAPIView):
     permission_classes = (AllowAny,)
-    serializer_class = MsisdnBlacklistStatusSerializer
+    # serializer_class = MsisdnBlacklistStatusSerializer
+    serializer_class = BlacklistSerializer
 
     def get(self, request, format=None):
         # Get request data

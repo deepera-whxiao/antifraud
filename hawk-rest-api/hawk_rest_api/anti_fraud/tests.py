@@ -32,7 +32,7 @@ class TestBlacklist(APITestCase):
         super().__init__(*args, **kwargs)
         self.url_prefix = '/anti-fraud/blacklist/'
 
-    def test_blacklist_all(self):
+    def test_blacklist_get(self):
         response = self.client.get('{}?op_time=201606'.format(self.url_prefix))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -55,6 +55,37 @@ class TestBlacklist(APITestCase):
                 "op_time": "201606"
             }
         )
+
+    def test_blacklist_post_and_delete(self):
+        response = self.client.post(
+            '{}?op_time=201606&acc_nbr=dc48b170a561db765bbbeb8ae1475c9f'.format(
+                self.url_prefix))
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            response.data,
+            {
+                "op_time": "201606",
+                "acc_nbr": "dc48b170a561db765bbbeb8ae1475c9f"
+            }
+        )
+
+        # remove the just posted record
+        response = self.client.delete(
+            '{}?op_time=201606&acc_nbr=dc48b170a561db765bbbeb8ae1475c9f'.format(
+                self.url_prefix))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_existing_acc_nbr_post(self):
+        response = self.client.post(
+            '{}?op_time=201606&acc_nbr=024d3cd31063bd78a514fe088a5dec5b'.format(
+                self.url_prefix))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_nonexisting_acc_nbr_delete(self):
+        response = self.client.delete(
+            '{}?op_time=201606&acc_nbr=dc48b170a561db765bbbeb8ae1475c9f'.format(
+                self.url_prefix))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_nonexisting_op_time(self):
         response = self.client.get('{}?op_time=201607'.format(self.url_prefix))
