@@ -15,10 +15,10 @@ $(HAWK_DB_DST): $(HAWK_DB_SRC)
 
 
 inspectdb: $(HAWK_DB_DST)
-	cd $(HAWK_REST_API_DIR) && python manage.py inspectdb \
+	cd $(HAWK_REST_API_DIR) && python3 manage.py inspectdb \
 		--database=legacy >anti_fraud/models.py
-	cd $(HAWK_REST_API_DIR) && python manage.py makemigrations
-	cd $(HAWK_REST_API_DIR) && python manage.py migrate
+	cd $(HAWK_REST_API_DIR) && python3 manage.py makemigrations
+	cd $(HAWK_REST_API_DIR) && python3 manage.py migrate
 
 
 clean:
@@ -26,7 +26,7 @@ clean:
 
 
 test: $(HAWK_DB_DST)
-	cd $(HAWK_REST_API_DIR) && python manage.py test anti_fraud
+	cd $(HAWK_REST_API_DIR) && python3 manage.py test anti_fraud
 
 
 # WARNING: The following file is tightly coupled with the unittest codes.
