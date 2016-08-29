@@ -42,8 +42,9 @@ class MsisdnBlacklist(LoggedAPIView):
         return Response(result)
 
     def post(self, request, format=None):
+        # print ("request.data: %s", request.data)
         # Get request data
-        serializer = BlacklistSerializer(data=request.GET)
+        serializer = BlacklistSerializer(data=request.data)
         if not serializer.is_valid(raise_exception=False):
             return Response({'error': 'Wrong input format.'},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -68,7 +69,7 @@ class MsisdnBlacklist(LoggedAPIView):
 
     def delete(self, request, format=None):
         # Get request data
-        serializer = BlacklistSerializer(data=request.GET)
+        serializer = BlacklistSerializer(data=request.data)
         if not serializer.is_valid(raise_exception=False):
             return Response({'error': 'Wrong input format.'},
                             status=status.HTTP_400_BAD_REQUEST)

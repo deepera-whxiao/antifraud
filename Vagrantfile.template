@@ -1,10 +1,10 @@
 # vi: set ft=ruby
 
 
-BOX_NAME    = "SPECIFY_ME"
-VM_NAME     = "SPECIFY_ME"
-VM_HOSTNAME = "SPECIFY_ME"
-VM_IP       = "SPECIFY_ME"
+BOX_NAME    = "hawk-devel"
+VM_NAME     = "hawk"
+VM_HOSTNAME = "hawk.deepera.com"
+VM_IP       = "192.168.70.202"
 
 
 global_provision_script = <<SCRIPT
